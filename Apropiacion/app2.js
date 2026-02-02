@@ -18,6 +18,7 @@ const crearPublicacion = async () => {
     return datos;
 };
 
+//Solicitud 5 (POST es para crear nueva informacion o nuevos datos)
 const NuevoComentariodePublicacion = async () => {
     let nuevoComentario = {
         userId: 1,
