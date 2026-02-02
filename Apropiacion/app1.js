@@ -43,6 +43,6 @@ const ejecutarSolicitud3 = async (userId) => {
 }
 
 //Descomentar para ejecutar las solicitudes
-// ejecutarSolicitud1();
+ejecutarSolicitud1();
 // ejecutarSolicitud2(1);
 // ejecutarSolicitud3(1);
