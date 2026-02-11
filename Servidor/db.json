@@ -59,12 +59,6 @@
       "id": "2"
     },
     {
-      "id": "3",
-      "userId": 3,
-      "title": "Arquitectura cliente-servidor",
-      "body": "Modelo de comunicación en aplicaciones web."
-    },
-    {
       "id": "4",
       "userId": 4,
       "title": "Método GET",
@@ -137,12 +131,6 @@
       "postId": 2,
       "name": "Comentario 3",
       "body": "Ayuda a entender HTTP."
-    },
-    {
-      "id": "4",
-      "postId": 3,
-      "name": "Comentario 4",
-      "body": "Buen ejemplo de arquitectura."
     },
     {
       "id": "5",

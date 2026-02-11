@@ -1,30 +1,48 @@
-/**
- * Objetivo: Eliminar una publicación solo si no tiene comentarios asociados.
- */
-const eliminarSiNoTieneComentarios = async (postId) => {
-    // 1. Consultar si existen comentarios para esta publicación específica
-    let resComents = await fetch(`http://localhost:3000/comments?postId=${postId}`);
-    let comentarios = await resComents.json();
-
-    // 2. Verificar si tiene comentarios
-    if (comentarios.length > 0) {
-        // Si existen comentarios, bloqueamos la eliminación
-        console.log("MENSAJE: No se puede eliminar la publicación porque tiene comentarios.");
-    } else {
-        // 3. Si no tiene comentarios, proceder a eliminar (DELETE)
-        let resDelete = await fetch(`http://localhost:3000/posts/${postId}`, {
-            method: 'DELETE'
-        });
-
-        if (resDelete.ok) {
-            console.log("MENSAJE: Publicación eliminada correctamente.");
-            
-            // 4. Validar resultado mediante una nueva consulta
-            let validacion = await fetch(`http://localhost:3000/posts/${postId}`);
-            console.log(validacion.status === 404 ? "Validación: Confirmado, ya no existe." : "Validación: Error, aún existe.");
-        }
-    }
+// Función asíncrona que sirve para buscar una publicación usando su id
+export const getPostById = async (id) => {
+  // Se hace la consulta al endpoint de publicaciones pasando el id
+  const query = await fetch(`http://localhost:8000/posts/${id}`);
+  // Se pasa la respuesta a formato JSON
+  const dataPost = await query.json();
+  // Se devuelve la información de la publicación
+  return dataPost;
 };
 
-// Ejemplo: Intentar eliminar la publicación ID 10
-eliminarSiNoTieneComentarios(10);
+// Función asíncrona que obtiene los comentarios de una publicación específica
+export const getCommetsByPost = async (postId) => {
+  // Se consulta el endpoint de comentarios filtrando por el id del post
+  const comentarios = await fetch(`http://localhost:8000/comments?postId=${postId}`);
+  // Se convierte la respuesta a JSON
+  const dataCommets = await comentarios.json();
+  // Se retorna el arreglo con los comentarios
+  return dataCommets;
+};
+
+// Función asíncrona que elimina una publicación usando su id
+export const eliminarPublicacion = async (id) => {
+  // Se envía la petición DELETE para eliminar la publicación
+  await fetch(`http://localhost:8000/posts/${id}`, {
+    method: 'DELETE',
+  });
+  // Se devuelve un mensaje indicando que la publicación fue eliminada
+  return "Publicación eliminada correctamente";
+};
+
+// Función asíncrona que elimina todos los comentarios de una publicación
+export const eliminarComentarios = async (comments) => {
+  // Variable para llevar el conteo de los comentarios eliminados
+  let contador = 0;
+
+  // Se recorren uno a uno los comentarios
+  for (const comentario of comments) {
+    // Se elimina cada comentario usando su id
+    await fetch(`http://localhost:8000/comments/${comentario.id}`, {
+      method: 'DELETE'
+    });
+    // Se aumenta el contador cada vez que se elimina un comentario
+    contador++;
+  }
+
+  // Se devuelve un mensaje con la cantidad de comentarios eliminados
+  return `Se eliminaron ${contador} comentarios de la publicación`;
+};
