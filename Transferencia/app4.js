@@ -1,40 +1,27 @@
-// Importo las funciones que necesito desde el archivo de transferencias
-import { getPostById, getCommetsByPost } from "./Enunciado4.js";
-import { eliminarPublicacion, eliminarComentarios } from "./Enunciado4.js";
+import { getCommentsByPost, eliminarPublicacion, getPostById } from "./Enunciado4.js";
 
-// Defino el id del post que voy a trabajar
-let postId = 3;
+const postIdAEliminar = 3;
 
-// Consulto la información del post usando su id
-const datospost = await getPostById(postId);
-console.log("Consultando Post");
-console.log(datospost);
+console.log(`--- Iniciando validación para el Post ID: ${postIdAEliminar} ---`);
 
-// Consulto los comentarios que tiene ese post
-const datoscomentarios = await getCommetsByPost(postId);
-console.log("Consultando Comentarios del Post");
-console.log(datoscomentarios);
+// 1. Consultar los comentarios asociados a la publicación
+const comentarios = await getCommentsByPost(postIdAEliminar);
 
-// Verifico si el post tiene comentarios
-// Si el arreglo tiene al menos un comentario, la variable queda en true
-let tiene = (datoscomentarios.length > 0) ? true : false;
-
-// Si el post tiene comentarios
-if (tiene) {
-  console.log("La publicación tiene comentarios, no se puede eliminar directamente");
-
-  // Primero elimino todos los comentarios del post
-  const eliminarComments = await eliminarComentarios(datoscomentarios);
-  console.log(eliminarComments);
-
-  // Después de eliminar los comentarios, elimino la publicación
-  const eliminarPost = await eliminarPublicacion(postId);
-  console.log(eliminarPost);
-
+// 2. Verificar si tiene comentarios
+if (comentarios.length > 0) {
+  // REQUERIMIENTO: Si tiene comentarios, NO debe eliminarse.
+  console.log("No se puede eliminar la publicación porque tiene comentarios");
 } else {
-  // Si el post no tiene comentarios, se puede eliminar sin problema
-  console.log("La publicación no tiene comentarios, sí se puede eliminar");
+  // 3. Si no tiene comentarios, proceder a la eliminación
+  console.log("La publicación no tiene comentarios, procediendo a eliminar...");
+  const resultadoEliminacion = await eliminarPublicacion(postIdAEliminar);
+  console.log(resultadoEliminacion);
 
-  const eliminacion = await eliminarPublicacion(postId);
-  console.log(eliminacion);
+  // 4. Validar el resultado mediante una nueva consulta (Requerimiento final)
+  const validacionPost = await getPostById(postIdAEliminar);
+  if (validacionPost === null) {
+    console.log("Validación confirmada: El post ya no existe en la base de datos.");
+  } else {
+    console.log("Error de validación: El post todavía existe.");
+  }
 }

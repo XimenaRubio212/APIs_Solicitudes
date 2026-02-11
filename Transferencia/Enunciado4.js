@@ -1,48 +1,28 @@
-// Función asíncrona que sirve para buscar una publicación usando su id
-export const getPostById = async (id) => {
-  // Se hace la consulta al endpoint de publicaciones pasando el id
-  const query = await fetch(`http://localhost:8000/posts/${id}`);
-  // Se pasa la respuesta a formato JSON
-  const dataPost = await query.json();
-  // Se devuelve la información de la publicación
-  return dataPost;
+// Función para obtener los comentarios de una publicación específica
+export const getCommentsByPost = async (postId) => {
+  const respuesta = await fetch(`http://localhost:8000/comments?postId=${postId}`);
+  const data = await respuesta.json();
+  return data;
 };
 
-// Función asíncrona que obtiene los comentarios de una publicación específica
-export const getCommetsByPost = async (postId) => {
-  // Se consulta el endpoint de comentarios filtrando por el id del post
-  const comentarios = await fetch(`http://localhost:8000/comments?postId=${postId}`);
-  // Se convierte la respuesta a JSON
-  const dataCommets = await comentarios.json();
-  // Se retorna el arreglo con los comentarios
-  return dataCommets;
-};
-
-// Función asíncrona que elimina una publicación usando su id
+// Función para eliminar una publicación usando su id
 export const eliminarPublicacion = async (id) => {
-  // Se envía la petición DELETE para eliminar la publicación
-  await fetch(`http://localhost:8000/posts/${id}`, {
+  const respuesta = await fetch(`http://localhost:8000/posts/${id}`, {
     method: 'DELETE',
   });
-  // Se devuelve un mensaje indicando que la publicación fue eliminada
-  return "Publicación eliminada correctamente";
+  
+  if (respuesta.ok) {
+    return "Publicación eliminada correctamente";
+  } else {
+    return "Error al intentar eliminar la publicación";
+  }
 };
 
-// Función asíncrona que elimina todos los comentarios de una publicación
-export const eliminarComentarios = async (comments) => {
-  // Variable para llevar el conteo de los comentarios eliminados
-  let contador = 0;
-
-  // Se recorren uno a uno los comentarios
-  for (const comentario of comments) {
-    // Se elimina cada comentario usando su id
-    await fetch(`http://localhost:8000/comments/${comentario.id}`, {
-      method: 'DELETE'
-    });
-    // Se aumenta el contador cada vez que se elimina un comentario
-    contador++;
-  }
-
-  // Se devuelve un mensaje con la cantidad de comentarios eliminados
-  return `Se eliminaron ${contador} comentarios de la publicación`;
+// Función para buscar una publicación (se usará para la validación final)
+export const getPostById = async (id) => {
+  const respuesta = await fetch(`http://localhost:8000/posts/${id}`);
+  // Si el status es 404, significa que ya no existe
+  if (respuesta.status === 404) return null;
+  const data = await respuesta.json();
+  return data;
 };
